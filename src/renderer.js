@@ -15,6 +15,8 @@ const state = {
   rects: [],           // 当前 treemap 矩形
   apps: [],
   aiSuggestions: [],
+  chatMessages: [],
+  chatTarget: null,
 };
 
 // ---------- 工具 ----------
@@ -346,9 +348,11 @@ function renderLargestList() {
       </div>
       <div class="ops">
         <button class="btn ghost small" data-act="locate">定位</button>
+        <button class="btn ghost small" data-act="ask">问AI</button>
         <button class="btn danger small" data-act="del">删除</button>
       </div>`;
     li.querySelector('[data-act="locate"]').onclick = () => locateItem(it);
+    li.querySelector('[data-act="ask"]').onclick = () => askAI(it);
     li.querySelector('[data-act="del"]').onclick = () => deleteItems([it]);
     ul.appendChild(li);
   }
@@ -558,6 +562,75 @@ async function executeAISelected() {
   }
 }
 
+// ---------- AI 智能问答（聊天） ----------
+function setChatTarget(p) {
+  state.chatTarget = p || null;
+  el('chat-target').value = p || '';
+}
+
+function askAI(item) {
+  switchView('ai');
+  setChatTarget(item.path);
+  renderChat();
+  el('chat-input').focus();
+  toast('已带入目标路径，直接提问即可（如：这是什么？能删吗？）', 'success');
+}
+
+function renderChat() {
+  const box = el('chat-messages');
+  box.innerHTML = '';
+  if (state.chatMessages.length === 0) {
+    box.innerHTML = '<div class="chat-empty">问我：这个文件夹是什么？能不能删？</div>';
+    return;
+  }
+  for (const m of state.chatMessages) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + (m.role === 'user' ? 'user' : 'ai');
+    const who = document.createElement('div');
+    who.className = 'chat-who';
+    who.textContent = m.role === 'user' ? '我' : 'AI';
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble';
+    bubble.textContent = m.content;
+    div.appendChild(who);
+    div.appendChild(bubble);
+    box.appendChild(div);
+  }
+  box.scrollTop = box.scrollHeight;
+}
+
+async function sendChat() {
+  const input = el('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  state.chatMessages.push({ role: 'user', content: text });
+  renderChat();
+
+  // 临时“思考中”占位
+  const thinking = document.createElement('div');
+  thinking.className = 'chat-msg ai';
+  thinking.innerHTML = '<div class="chat-who">AI</div><div class="chat-bubble thinking">思考中…</div>';
+  el('chat-messages').appendChild(thinking);
+  el('chat-messages').scrollTop = el('chat-messages').scrollHeight;
+
+  const btn = el('chat-send');
+  btn.disabled = true;
+  try {
+    const target = el('chat-target').value.trim() || state.chatTarget;
+    state.chatTarget = target || null;
+
+    const r = await window.api.aiChat(state.chatMessages.slice(-20), state.chatTarget);
+    state.chatMessages.push({ role: 'assistant', content: r.reply });
+  } catch (e) {
+    state.chatMessages.push({ role: 'assistant', content: '⚠️ ' + e.message });
+  } finally {
+    btn.disabled = false;
+    renderChat();
+  }
+}
+
 // ---------- 事件绑定 ----------
 function bindEvents() {
   document.querySelectorAll('.nav-btn').forEach((b) => (b.onclick = () => switchView(b.dataset.view)));
@@ -590,6 +663,11 @@ function bindEvents() {
   el('ai-save').onclick = saveAIConfig;
   el('ai-analyze').onclick = runAI;
   el('ai-delete-selected').onclick = executeAISelected;
+
+  el('chat-send').onclick = sendChat;
+  el('chat-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChat(); });
+  el('chat-target').addEventListener('change', () => { state.chatTarget = el('chat-target').value.trim() || null; });
+  el('chat-clear-target').onclick = () => setChatTarget(null);
 
   window.api.onScanProgress((d) => {
     const box = el('scan-progress');

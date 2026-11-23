@@ -105,6 +105,22 @@
           <button id="ai-delete-selected" class="btn danger">🗑 执行选中清理（进回收站）</button>
         </div>
       </div>
+
+      <div class="ai-chat card">
+        <h3>💬 智能问答</h3>
+        <p class="note">想了解某个文件/文件夹是什么、能不能删？在「空间视图」大文件列表点「问 AI」，或直接输入路径后提问。</p>
+        <div class="chat-target">
+          <input id="chat-target" placeholder="目标路径（从列表「问AI」自动带入，或手动粘贴）" />
+          <button id="chat-clear-target" class="btn ghost small">清除</button>
+        </div>
+        <div id="chat-messages" class="chat-messages">
+          <div class="chat-empty">问我：这个文件夹是什么？能不能删？</div>
+        </div>
+        <div class="chat-input-row">
+          <input id="chat-input" placeholder="输入问题，例如：这是什么？能删吗？" />
+          <button id="chat-send" class="btn primary">发送</button>
+        </div>
+      </div>
     </section>
   </main>
 

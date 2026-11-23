@@ -1,6 +1,6 @@
 {
   "name": "disk-cleaner",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "可视化磁盘空间管理工具：磁盘占用图 + 应用卸载 + AI 清理建议",
   "main": "main.js",
   "author": "磁盘管家",

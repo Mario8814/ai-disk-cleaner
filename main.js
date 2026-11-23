@@ -4,7 +4,7 @@ const { scanDirectory } = require('./lib/scanner');
 const { listApps } = require('./lib/apps');
 const { uninstallApp } = require('./lib/uninstall');
 const { listDrives, trashItems, deletePermanently, openPath, showInFolder } = require('./lib/system');
-const { getAIConfig, setAIConfig, analyzeWithAI } = require('./lib/ai');
+const { getAIConfig, setAIConfig, analyzeWithAI, chatWithAI } = require('./lib/ai');
 
 let mainWindow = null;
 const scanState = { active: false, cancel: false };
@@ -82,3 +82,4 @@ ipcMain.handle('scan-cancel', () => {
 ipcMain.handle('ai-config-get', () => getAIConfig());
 ipcMain.handle('ai-config-set', (_e, cfg) => setAIConfig(cfg));
 ipcMain.handle('ai-analyze', (_e, payload) => analyzeWithAI(payload));
+ipcMain.handle('ai-chat', (_e, messages, targetPath) => chatWithAI(messages, targetPath));
