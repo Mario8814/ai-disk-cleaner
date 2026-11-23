@@ -15,7 +15,7 @@ function createWindow() {
     height: 820,
     minWidth: 960,
     minHeight: 620,
-    title: '磁盘管家',
+    title: 'AI 磁盘管家',
     backgroundColor: '#0f1115',
     autoHideMenuBar: true,
     webPreferences: {

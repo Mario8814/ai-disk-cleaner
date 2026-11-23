@@ -1,4 +1,4 @@
-# 🧹 磁盘管家 (Disk Cleaner)
+# 🧹 AI 磁盘管家 (Disk Cleaner)
 
 一个 Windows 桌面小工具：可视化磁盘占用、删除文件/卸载应用、接入 AI 给出清理建议。
 
@@ -45,7 +45,7 @@ npm start
 ## 目录结构
 
 ```
-disk-cleaner/
+ai-disk-cleaner/
 ├── main.js             Electron 主进程 + IPC
 ├── preload.js          安全桥接 (contextBridge)
 ├── lib/
