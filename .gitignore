@@ -15,3 +15,6 @@ dist/
 *.log
 .DS_Store
 Thumbs.db
+
+# 图标预览图（生成产物）
+build/preview.png
