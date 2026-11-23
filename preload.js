@@ -22,5 +22,5 @@ contextBridge.exposeInMainWorld('api', {
   getAIConfig: () => ipcRenderer.invoke('ai-config-get'),
   setAIConfig: (cfg) => ipcRenderer.invoke('ai-config-set', cfg),
   aiAnalyze: (payload) => ipcRenderer.invoke('ai-analyze', payload),
-  aiChat: (messages, targetPath) => ipcRenderer.invoke('ai-chat', messages, targetPath),
+  aiChat: (messages, targetPath, scanContext) => ipcRenderer.invoke('ai-chat', messages, targetPath, scanContext),
 });

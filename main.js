@@ -82,4 +82,4 @@ ipcMain.handle('scan-cancel', () => {
 ipcMain.handle('ai-config-get', () => getAIConfig());
 ipcMain.handle('ai-config-set', (_e, cfg) => setAIConfig(cfg));
 ipcMain.handle('ai-analyze', (_e, payload) => analyzeWithAI(payload));
-ipcMain.handle('ai-chat', (_e, messages, targetPath) => chatWithAI(messages, targetPath));
+ipcMain.handle('ai-chat', (_e, messages, targetPath, scanContext) => chatWithAI(messages, targetPath, scanContext));

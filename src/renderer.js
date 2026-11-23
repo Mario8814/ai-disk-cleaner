@@ -599,6 +599,19 @@ function renderChat() {
   box.scrollTop = box.scrollHeight;
 }
 
+function buildScanContext() {
+  if (!state.tree) return { scanned: false };
+  return {
+    scanned: true,
+    rootPath: (state.scanMeta && state.scanMeta.rootPath) || state.tree.path,
+    fileCount: (state.scanMeta && state.scanMeta.fileCount) || 0,
+    dirCount: (state.scanMeta && state.scanMeta.dirCount) || 0,
+    drives: state.drives.map((d) => ({ id: d.id, used: fmtBytes(d.used), free: fmtBytes(d.free), total: fmtBytes(d.total) })),
+    topFolders: state.topFolders.slice(0, 15).map((n) => ({ name: n.name, path: n.path, size: fmtBytes(n.size) })),
+    topFiles: state.largestFiles.slice(0, 15).map((f) => ({ name: f.name, path: f.path, size: fmtBytes(f.size) })),
+  };
+}
+
 async function sendChat() {
   const input = el('chat-input');
   const text = input.value.trim();
@@ -621,7 +634,7 @@ async function sendChat() {
     const target = el('chat-target').value.trim() || state.chatTarget;
     state.chatTarget = target || null;
 
-    const r = await window.api.aiChat(state.chatMessages.slice(-20), state.chatTarget);
+    const r = await window.api.aiChat(state.chatMessages.slice(-20), state.chatTarget, buildScanContext());
     state.chatMessages.push({ role: 'assistant', content: r.reply });
   } catch (e) {
     state.chatMessages.push({ role: 'assistant', content: '⚠️ ' + e.message });
