@@ -1,0 +1,17 @@
+# 依赖
+node_modules/
+
+# 打包产物（exe / 解包目录）
+release/
+dist/
+
+# 个人环境配置（国内镜像，非项目源码）
+.npmrc
+
+# 根目录的重复文件（与 src/treemap.js 内容相同，待确认后删除）
+/treemap.js
+
+# 日志与系统文件
+*.log
+.DS_Store
+Thumbs.db

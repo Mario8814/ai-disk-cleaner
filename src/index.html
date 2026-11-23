@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+  <title>磁盘管家</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">🧹 磁盘管家</div>
+
+    <div class="section-title">磁盘</div>
+    <div id="drives" class="drives"></div>
+
+    <div class="section-title">功能</div>
+    <nav class="nav">
+      <button class="nav-btn active" data-view="treemap">📊 空间视图</button>
+      <button class="nav-btn" data-view="apps">📦 应用卸载</button>
+      <button class="nav-btn" data-view="ai">🤖 AI 清理</button>
+    </nav>
+
+    <div class="scan-box">
+      <button id="scan-selected" class="btn primary" disabled>🔍 扫描选中磁盘</button>
+      <button id="scan-folder" class="btn ghost">📁 扫描指定文件夹</button>
+      <button id="scan-cancel" class="btn danger hidden">⏹ 停止扫描</button>
+      <div id="scan-progress" class="progress hidden"></div>
+    </div>
+
+    <div class="footer-note">删除默认进入回收站，可恢复</div>
+  </aside>
+
+  <main class="main">
+    <!-- 空间视图 -->
+    <section id="view-treemap" class="view active">
+      <div class="toolbar">
+        <div class="breadcrumb" id="breadcrumb"></div>
+        <div class="stats" id="stats"></div>
+      </div>
+      <div class="split">
+        <div class="map-wrap">
+          <canvas id="treemap"></canvas>
+          <div id="tooltip" class="tooltip hidden"></div>
+          <div id="empty-hint" class="empty-hint">
+            <p>👈 在左侧选择磁盘，点击「扫描」开始分析</p>
+            <p class="sub">会生成可视化方块图，点击方块可逐层下钻</p>
+          </div>
+        </div>
+        <div class="list-panel">
+          <div class="list-head">
+            <h3>📁 最大的文件 / 文件夹</h3>
+            <label class="toggle"><input type="checkbox" id="trash-toggle" checked /> 移入回收站</label>
+          </div>
+          <div class="list-actions">
+            <button id="select-all" class="btn ghost small">全选</button>
+            <button id="delete-selected" class="btn danger small">🗑 删除选中</button>
+          </div>
+          <ul id="largest-list" class="largest-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 应用卸载 -->
+    <section id="view-apps" class="view">
+      <div class="toolbar">
+        <h2>📦 已安装应用</h2>
+        <div class="toolbar-right">
+          <input id="app-search" class="search" placeholder="搜索应用名称..." />
+          <button id="refresh-apps" class="btn ghost">🔄 刷新</button>
+        </div>
+      </div>
+      <div id="apps-hint" class="hint"></div>
+      <ul id="apps-list" class="apps"></ul>
+    </section>
+
+    <!-- AI 清理 -->
+    <section id="view-ai" class="view">
+      <div class="toolbar"><h2>🤖 AI 智能清理</h2></div>
+
+      <div class="ai-config card">
+        <h3>DeepSeek 设置</h3>
+        <div class="field-row">
+          <label>API Key</label>
+          <input type="password" id="ai-key" placeholder="sk-..." autocomplete="off" />
+        </div>
+        <div class="field-row">
+          <label>接口地址</label>
+          <input id="ai-base" value="https://api.deepseek.com" />
+        </div>
+        <div class="field-row">
+          <label>模型</label>
+          <input id="ai-model" value="deepseek-chat" />
+        </div>
+        <div class="field-row actions">
+          <button id="ai-save" class="btn ghost">保存设置</button>
+          <button id="ai-analyze" class="btn primary">🤖 开始分析</button>
+        </div>
+        <p class="note">分析会把「最大的文件/文件夹/已装软件」的路径和大小发送给 DeepSeek，用于生成清理建议。建议先完成一次磁盘扫描再分析，效果更好。</p>
+      </div>
+
+      <div id="ai-result" class="ai-result hidden">
+        <p id="ai-summary" class="summary"></p>
+        <ul id="ai-suggestions" class="apps"></ul>
+        <div class="list-actions">
+          <button id="ai-delete-selected" class="btn danger">🗑 执行选中清理（进回收站）</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="treemap.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

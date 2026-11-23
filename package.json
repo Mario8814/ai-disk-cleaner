@@ -1,0 +1,53 @@
+{
+  "name": "disk-cleaner",
+  "version": "1.0.0",
+  "description": "可视化磁盘空间管理工具：磁盘占用图 + 应用卸载 + AI 清理建议",
+  "main": "main.js",
+  "author": "磁盘管家",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64",
+    "dist:dir": "electron-builder --win --x64 --dir"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^26.18.0"
+  },
+  "allowScripts": {
+    "electron@33.4.11": true,
+    "electron-winstaller@5.4.0": true
+  },
+  "build": {
+    "appId": "com.diskcleaner.app",
+    "productName": "磁盘管家",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "lib/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "磁盘管家",
+      "artifactName": "${productName}-安装版-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-便携版-${version}.${ext}"
+    }
+  }
+}
