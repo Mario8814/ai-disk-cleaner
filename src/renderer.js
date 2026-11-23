@@ -491,11 +491,11 @@ async function runAI() {
     el('ai-summary').textContent = result.summary || '';
     renderAISuggestions();
     resultBox.classList.remove('hidden');
+    el('ai-result-hint').classList.add('hidden');
     toast('AI 分析完成', 'success');
   } catch (e) {
-    resultBox.classList.remove('hidden');
-    el('ai-summary').textContent = '';
-    el('ai-suggestions').innerHTML = '';
+    resultBox.classList.add('hidden');
+    el('ai-result-hint').classList.remove('hidden');
     toast('分析失败：' + e.message, 'error');
   } finally {
     btn.disabled = false;
